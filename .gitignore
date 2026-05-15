@@ -1,6 +1,3 @@
-# ----- OS junk -----
-.DS_Store
-
 # ----- Python cruft -----
 __pycache__/
 *.py[cod]
