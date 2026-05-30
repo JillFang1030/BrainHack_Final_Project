@@ -53,14 +53,22 @@ Behavioral measures include:
 
 ### Step 1 — fNIRS Preprocessing (MATLAB, NIRS Brain AnalyzIR Toolbox)
 
+#### Data Acquisition
+
+fNIRS data were acquired using a NIRScout 1624 system (15 sources, 16 detectors, 38 channels) with dual wavelengths of 760 nm and 850 nm. The original signals were sampled at 3.91 Hz.
+
+#### Preprocessing Pipeline
+
 Raw fNIRS signals were preprocessed using the following pipeline:
 
 - Stimulus relabeling (`MA`, `PA`, `Control`)
 - Short-separation channel labeling
-- Resampling to 2 Hz
+- Resampling from 3.91 Hz to 2 Hz
 - Optical Density conversion
-- Beer–Lambert Law conversion to HbO/HbR
+- Beer–Lambert Law conversion to HbO/HbR concentration changes
 - Baseline trimming (first and last 5 seconds cropped)
+
+It is important to note that the subsequent analyses were not performed on the raw fNIRS time-series signals directly. Instead, the preprocessed signals were entered into a first-level GLM, and the resulting HbO beta estimates were used for all downstream statistical analyses.
 
 ### Step 2 — First-Level GLM (Subject-Level)
 
@@ -132,20 +140,14 @@ Python was used to perform exploratory brain–behavior analyses.
 
 Pearson correlations were computed between:
 
-- MA beta values
+- HbO beta estimates from the MA condition
 - Behavioral scores (`C_MC`, `Character_recog (PR)`)
 
-for selected channels:
-
-- CH6
-- CH16
-- CH21
-
-No significant correlations were observed.
+For selected channels **CH6. CH16, CH21**, no significant correlations were observed.
 
 ### Step 6 — Exploratory Whole-Brain Analysis
 
-Following feedback during the BrainHack pitch discussion, the analysis strategy was revised to reduce potential selection bias ("double dipping").
+Following feedback from TA, lab members and the BrainHack pitch discussion, the analysis strategy was revised to reduce potential selection bias ("double dipping").
 
 #### Motivation
 
@@ -177,10 +179,10 @@ A channel showing significant TD vs. DD differences does not necessarily entail 
 
 Potential future improvements include:
 
+- Expanding the sample size to improve statistical power
 - Testing additional behavioral measures
-- Exploring potential non-linear relationships
-- Increasing sample size
-- Investigating theoretical links between behavioral tasks and neural activation
+- Examining theoretically motivated brain–behavior relationships
+- Integrating behavioral predictors within a unified modeling framework
 
 ## How to Run Locally
 
