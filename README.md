@@ -1,96 +1,227 @@
-# BrainHack Final Project: fNIRS Brain-Behavior Analysis
+# BrainHack Final Project: fNIRS Brain–Behavior Analysis in Children With and Without Dyslexia
 
-## Description
+## Overview
 
-This project investigates neural correlates of reading development in children, comparing **typically developing (TD)** children and children with **developmental dyslexia (DD)** using functional near-infrared spectroscopy (fNIRS).
+This project investigates neural correlates of reading development in children using functional near-infrared spectroscopy (fNIRS), comparing typically developing (TD) children and children with developmental dyslexia (DD).
 
-The study aims to:
-- Identify brain regions showing differential activation during a Morphological Awareness (MA) task between TD and DD groups
-- Examine whether task-evoked neural responses can explain individual differences in reading ability (Chinese Character Recognition)
+The project combines MATLAB-based fNIRS preprocessing and mixed-effects modeling with Python-based brain–behavior analysis and visualization.
 
----
+In addition to examining group differences in neural activation, this project also explores whether task-evoked brain responses are associated with literacy-related behavioral performance.
+
+## Research Questions
+
+### 1. Group-Level Neural Differences
+
+Which brain regions show differential activation during a Morphological Awareness (MA) task between TD and DD groups?
+
+### 2. Brain–Behavior Relationships
+
+Are neural activation patterns associated with individual differences in literacy performance?
+
+Behavioral measures include:
+
+- Chinese Character Recognition percentile rank (`Character_recog (PR)`)
+- Morphological Construction (`C_MC`)
 
 ## Repository Structure
 
-- `BrainHack_Final_Project.ipynb` — Main analysis script (brain-behavior correlation, plots)
-- `Beta_TD.csv` — Extracted first-level GLM beta values for the TD group (per participant × channel × condition)
-- `Beta_DD.csv` — Extracted first-level GLM beta values for the DD group (per participant × channel × condition)
-- `TD_for_project.xlsx` — Behavioral data for the TD group
-- `DD_for_project.xlsx` — Behavioral data for the DD group
-- `.gitignore` — Configured to exclude all raw data files (.xlsx, .csv) to ensure data privacy
-
----
+| File | Description |
+|--------|--------|
+| `BrainHack_Final_Project.ipynb` | Main Python analysis notebook |
+| `Beta_TD.csv` | First-level GLM beta values for TD participants |
+| `Beta_DD.csv` | First-level GLM beta values for DD participants |
+| `TD_for_project.xlsx` | Behavioral data for TD participants |
+| `DD_for_project.xlsx` | Behavioral data for DD participants |
+| `.gitignore` | Excludes raw/private data files |
 
 ## Behavioral Measures
 
 | Variable | Description |
-|---|---|
+|--------|--------|
 | `C_MC` | Morphological Construction — measures morphological awareness |
 | `Character_recog (PR)` | Chinese Character Recognition percentile rank — measures reading ability |
-
----
 
 ## fNIRS Task Conditions
 
 | Condition | Description |
-|---|---|
-| MA | Morphological Awareness task |
-| PA | Phonological Awareness task |
-| Control | Baseline control task |
-
----
+|--------|--------|
+| `MA` | Morphological Awareness task |
+| `PA` | Phonological Awareness task |
+| `Control` | Baseline control condition |
 
 ## Analysis Pipeline
 
 ### Step 1 — fNIRS Preprocessing (MATLAB, NIRS Brain AnalyzIR Toolbox)
 
-Raw fNIRS signals were preprocessed in the following order:
+Raw fNIRS signals were preprocessed using the following pipeline:
 
-1. Stimulus renaming — relabeled task channels to `MA`, `PA`, `Control`
-2. Short-separation channel labeling — for noise regression
-3. Resampling — downsampled to **2 Hz**
-4. Optical Density conversion
-5. Beer-Lambert Law — converted to HbO/HbR concentration changes
-6. Baseline trimming — first and last **5 seconds** cropped (temporal cropping, not averaging)
+- Stimulus relabeling (`MA`, `PA`, `Control`)
+- Short-separation channel labeling
+- Resampling to 2 Hz
+- Optical Density conversion
+- Beer–Lambert Law conversion to HbO/HbR
+- Baseline trimming (first and last 5 seconds cropped)
 
 ### Step 2 — First-Level GLM (Subject-Level)
 
-A GLM was fitted on the preprocessed time series for each participant individually.
+A first-level GLM was fitted separately for each participant.
 
-- Method: AR-IRLS (handles motion artifacts and autocorrelation)
-- HRF: Canonical hemodynamic response function, peak time = 6 seconds
+#### Method
+
+- AR-IRLS (autoregressive iteratively reweighted least squares)
+- Canonical HRF (peak = 6 seconds)
 - Short-separation regressors included
-- Output: `SubjStats` — one beta estimate per participant × channel × condition
+
+#### Output
+
+`SubjStats`
+
+One HbO beta estimate was generated for each:
+
+- participant × channel × condition
 
 ### Step 3 — Beta Value Extraction
 
-Individual beta values were extracted from `SubjStats` and saved as `Beta_TD.csv` and `Beta_DD.csv` (one row per participant × channel × condition, HbO only).
+HbO beta values were extracted from `SubjStats` and exported as:
 
-### Step 4 — Group-Level LME (Channel Selection)
+- `Beta_TD.csv`
+- `Beta_DD.csv`
 
-A linear mixed effects model was fitted on the extracted betas:
+Each row corresponds to:
 
-```
+- one participant × one channel × one condition
+
+### Step 4 — Group-Level LME Analysis (Initial Channel Selection)
+
+A linear mixed-effects model (LME) was applied to identify channels showing group differences.
+
+#### Model
+
+```r
 beta ~ -1 + Group:cond + (1|Subject)
 ```
 
-Contrasts (TD MA vs. DD MA) were used to identify channels with significant group differences (FDR-corrected and uncorrected). This step determined which channels to use in the correlation analysis:
+#### Purpose
 
-- **CH6** — significant at FDR < .05 (TD MA − DD MA contrast)
-- **CH16, CH21** — significant at uncorrected p < .05
+- Compare neural activation between TD and DD groups
+- Control for repeated measurements and individual variability
 
-### Step 5 — Brain-Behavior Correlation (Python)
+#### Initial Findings
 
-For each selected channel, Pearson correlations were computed between:
-- MA beta values (from `Beta_TD.csv` / `Beta_DD.csv`)
+| Channel | Result |
+|--------|--------|
+| CH6 | Significant after FDR correction |
+| CH16 | Significant at uncorrected p < .05 |
+| CH21 | Significant at uncorrected p < .05 |
+
+Initially, these channels were selected for downstream brain–behavior correlation analysis.
+
+### Step 5 — Brain–Behavior Correlation Analysis (Python)
+
+Python was used to perform exploratory brain–behavior analyses.
+
+#### Skills Applied From BrainHack
+
+- Interactive visualization (Plotly)
+- Pearson correlation analysis
+- Whole-brain exploratory visualization
+- Statistical pipeline evaluation
+- Multiple-comparison correction (FDR)
+
+#### Initial Correlation Analysis
+
+Pearson correlations were computed between:
+
+- MA beta values
 - Behavioral scores (`C_MC`, `Character_recog (PR)`)
 
-Analyses were run separately for the TD and DD groups.
+for selected channels:
 
----
+- CH6
+- CH16
+- CH21
+
+No significant correlations were observed.
+
+### Step 6 — Exploratory Whole-Brain Analysis
+
+Following feedback during the BrainHack pitch discussion, the analysis strategy was revised to reduce potential selection bias ("double dipping").
+
+#### Motivation
+
+Selecting channels based on prior group differences may bias downstream correlation analyses and overlook meaningful associations in other channels.
+
+#### Updated Analysis
+
+- All 32 channels were analyzed
+- Pearson correlations computed for every channel
+- An 8×4 scatterplot matrix was generated in Python
+- FDR correction applied across all 32 correlation tests
+
+#### Result
+
+- No channel survived FDR correction
+- Most scatterplots showed weak, cloud-like distributions
+- No robust linear brain–behavior relationship was observed
+
+## Key Methodological Insight
+
+This project highlighted an important distinction between:
+
+- Group-level effects (LME)
+- Brain–behavior associations (Pearson correlation)
+
+A channel showing significant TD vs. DD differences does not necessarily entail a significant relationship with independent behavioral measures, and vice versa.
+
+## Future Directions
+
+Potential future improvements include:
+
+- Testing additional behavioral measures
+- Exploring potential non-linear relationships
+- Increasing sample size
+- Investigating theoretical links between behavioral tasks and neural activation
 
 ## How to Run Locally
 
+### Requirements
+
+- Python 3.x
+- Jupyter Notebook
+- pandas
+- numpy
+- scipy
+- matplotlib
+- plotly
+- statsmodels
+
+### Steps
+
 1. Clone this repository
-2. Place the required data files (`DD_for_project.xlsx`, `TD_for_project.xlsx`, `Beta_TD.csv`, `Beta_DD.csv`) into the same directory
-3. Run the notebook using Jupyter or VS Code
+
+2. Place the following files in the project directory:
+
+- `DD_for_project.xlsx`
+- `TD_for_project.xlsx`
+- `Beta_TD.csv`
+- `Beta_DD.csv`
+
+3. Run:
+
+```bash
+jupyter notebook
+```
+
+4. Open:
+
+```text
+BrainHack_Final_Project.ipynb
+```
+
+## Acknowledgements
+
+Special thanks to the BrainHack instructors and TAs for feedback and methodological discussions regarding:
+
+- double dipping
+- whole-brain analysis
+- statistical interpretation
