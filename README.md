@@ -84,9 +84,7 @@ A first-level GLM was fitted separately for each participant.
 
 `SubjStats`
 
-One HbO beta estimate was generated for each:
-
-- participant × channel × condition
+One HbO beta estimate was generated for each **participant × channel × condition.**
 
 ### Step 3 — Beta Value Extraction
 
