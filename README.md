@@ -61,21 +61,21 @@ The original fNIRS signals were acquired at 3.91 Hz using a NIRScout 1624 syste 
 
 Raw fNIRS signals were preprocessed using the following pipeline:
 
+- Baseline trimming (first and last 5 seconds cropped)
 - Stimulus relabeling (`MA`, `PA`, `Control`)
 - Short-separation channel labeling
 - Optical Density conversion
 - Beer–Lambert Law conversion to HbO/HbR concentration changes
-- Baseline trimming (first and last 5 seconds cropped)
 
-It is important to note that the subsequent analyses were not performed on the raw fNIRS time-series signals directly. Instead, the preprocessed signals were entered into a first-level GLM, and the resulting HbO beta estimates were used for all downstream statistical analyses.
+Please note that the subsequent analyses were not performed on the raw fNIRS time-series signals directly. Instead, the preprocessed signals were entered into a first-level GLM, and the resulting HbO beta estimates were used for all downstream statistical analyses.
 
 ### Step 2 — First-Level GLM (Subject-Level)
 
-A first-level GLM was fitted separately for each participant.
+A first-level GLM was fitted separately for each participant to get Subject-level activation estimates.
 
 #### Method
 
-- AR-IRLS (autoregressive iteratively reweighted least squares)
+- AR-IRLS (robust GLM approach commonly used in fNIRS)
 - Canonical HRF (peak = 6 seconds)
 - Short-separation regressors included
 
@@ -92,9 +92,7 @@ HbO beta values were extracted from `SubjStats` and exported as:
 - `Beta_TD.csv`
 - `Beta_DD.csv`
 
-Each row corresponds to:
-
-- one participant × one channel × one condition
+Each row corresponds to one **participant × one channel × one condition**
 
 ### Step 4 — Group-Level LME Analysis (Initial Channel Selection)
 
@@ -125,13 +123,12 @@ Initially, these channels were selected for downstream brain–behavior correlat
 
 Python was used to perform exploratory brain–behavior analyses.
 
-#### Skills Applied From BrainHack
+#### Skills Applied From BrainHackSchool
 
-- Interactive visualization (Plotly)
-- Pearson correlation analysis
+- Interactive visualization with Python (Plotly)
+- Pearson correlation analysis with Python
 - Whole-brain exploratory visualization
 - Statistical pipeline evaluation
-- Multiple-comparison correction (FDR)
 
 #### Initial Correlation Analysis
 
@@ -150,7 +147,7 @@ Following feedback from TA, lab members and the BrainHack pitch discussion, the 
 
 Selecting channels based on prior group differences may bias downstream correlation analyses and overlook meaningful associations in other channels.
 
-#### Updated Analysis
+#### Updated Analysis: Whole Brain Analysis
 
 - All 32 channels were analyzed
 - Pearson correlations computed for every channel
@@ -163,21 +160,18 @@ Selecting channels based on prior group differences may bias downstream correlat
 - Most scatterplots showed weak, cloud-like distributions
 - No robust linear brain–behavior relationship was observed
 
+#### Updated Analysis: Adding Behavioral Measurement
+- Only Channel 16 C_PIC is minimally significant...
+
 ## Key Methodological Insight
 
-This project highlighted an important distinction between:
-
-- Group-level effects (LME)
-- Brain–behavior associations (Pearson correlation)
+This project highlighted an important distinction between Group-level effects (LME) and Brain–behavior associations (Pearson correlation).
 
 A channel showing significant TD vs. DD differences does not necessarily entail a significant relationship with independent behavioral measures, and vice versa.
 
 ## Future Directions
 
-Potential future improvements include:
-
 - Expanding the sample size to improve statistical power
-- Testing additional behavioral measures
 - Examining theoretically motivated brain–behavior relationships
 - Integrating behavioral predictors within a unified modeling framework
 
