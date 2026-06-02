@@ -55,7 +55,7 @@ Behavioral measures include:
 
 #### Data Acquisition
 
-fNIRS data were acquired using a NIRScout 1624 system (15 sources, 16 detectors, 38 channels) with dual wavelengths of 760 nm and 850 nm. The original signals were sampled at 3.91 Hz.
+The original fNIRS signals were acquired at 3.91 Hz using a NIRScout 1624 syste (15 sources, 16 detectors, 38 channels) with dual wavelengths of 760 nm and 850 nm.
 
 #### Preprocessing Pipeline
 
