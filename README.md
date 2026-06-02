@@ -63,7 +63,6 @@ Raw fNIRS signals were preprocessed using the following pipeline:
 
 - Stimulus relabeling (`MA`, `PA`, `Control`)
 - Short-separation channel labeling
-- Resampling from 3.91 Hz to 2 Hz
 - Optical Density conversion
 - Beer–Lambert Law conversion to HbO/HbR concentration changes
 - Baseline trimming (first and last 5 seconds cropped)
