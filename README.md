@@ -1,27 +1,19 @@
 # BrainHack Final Project: fNIRS Brain–Behavior Analysis in Children With and Without Dyslexia
 
 ## Overview
+This project investigates the neural correlates of reading development in children using functional near-infrared spectroscopy (fNIRS), comparing typically developing (TD) children and children with developmental dyslexia (DD). Building on a previous MATLAB-based fNIRS preprocessing and localization framework, this project further implements a Python-based brain–behavior correlation and matrix visualization engine.
 
-This project investigates neural correlates of reading development in children using functional near-infrared spectroscopy (fNIRS), comparing typically developing (TD) children and children with developmental dyslexia (DD).
-
-The project combines MATLAB-based fNIRS preprocessing and mixed-effects modeling with Python-based brain–behavior analysis and visualization.
-
-In addition to examining group differences in neural activation, this project also explores whether task-evoked brain responses are associated with literacy-related behavioral performance.
+---
 
 ## Research Questions
 
 ### 1. Group-Level Neural Differences
-
-Which brain regions show differential activation during a Morphological Awareness (MA) task between TD and DD groups?
+Which specific brain regions show differential activation during a Morphological Awareness (MA) task between the TD and DD groups?
 
 ### 2. Brain–Behavior Relationships
+Are individual neural activation patterns within these key functional regions associated with literacy-related behavioral performance across a comprehensive battery of 9 behavioral measures?
 
-Are neural activation patterns associated with individual differences in literacy performance?
-
-Behavioral measures include:
-
-- Chinese Character Recognition percentile rank (`Character_recog (PR)`)
-- Morphological Construction (`C_MC`)
+---
 
 ## Repository Structure
 
@@ -32,184 +24,78 @@ Behavioral measures include:
 | `Beta_DD.csv` | First-level GLM beta values for DD participants |
 | `TD_for_project.xlsx` | Behavioral data for TD participants |
 | `DD_for_project.xlsx` | Behavioral data for DD participants |
+| `All_Subjects_60_Correlation_Results.xlsx` | **[New]** Exported 3 channels × 9 behaviors Pearson correlation table (N=60) |
+| `target_3ch_9behav_heatmap.png` | **[New]** Generated 3×9 brain-behavior correlation heatmap matrix |
 | `.gitignore` | Excludes raw/private data files |
 
-## Behavioral Measures
+---
 
-| Variable | Description |
-|--------|--------|
-| `C_MC` | Morphological Construction — measures morphological awareness |
-| `Character_recog (PR)` | Chinese Character Recognition percentile rank — measures reading ability |
+## Behavioral Measures (9 Dimensions)
+To achieve a comprehensive profile of individual reading-related cognitive abilities, we expanded our analysis to encompass **9 distinct behavioral variables** from the raw participant files:
+- `C_MC`: Morphological Construction (Measures morphological awareness)
+- `Character_recog (PR)`: Chinese Character Recognition percentile rank (Measures reading ability); PR is used to avoid the confounding of age.
+- `C_CTOPP`: Comprehensive Test of Phonological Processing
+- `C_RAN`: Rapid Automatized Naming
+- `C_CR`: Character Reading
+- `C_WR`: Word Reading
+- `C_PIC` & `C_PIC (52)`: Picture-Naming measures
+- `C_RF`: Reading Fluency
 
-## fNIRS Task Conditions
-
-| Condition | Description |
-|--------|--------|
-| `MA` | Morphological Awareness task |
-| `PA` | Phonological Awareness task |
-| `Control` | Baseline control condition |
+---
 
 ## Analysis Pipeline
 
-### Step 1 — fNIRS Preprocessing (MATLAB, NIRS Brain AnalyzIR Toolbox)
+### [Phase 1: Previous MATLAB Pipeline & Channel Selection]
+*The following initial steps were fully completed in MATLAB prior to the Python integration, establishing our region-driven framework:*
 
-#### Data Acquisition
+#### Step 1 — Preprocessing (MATLAB, NIRS Brain AnalyzIR Toolbox)
+Raw fNIRS signals were acquired at 3.91 Hz using a NIRScout system. The raw time-series were preprocessed using a robust pipeline including baseline trimming, optical density conversion, and short-separation channel regression.
 
-The original fNIRS signals were acquired at 3.91 Hz using a NIRScout 1624 syste (15 sources, 16 detectors, 38 channels) with dual wavelengths of 760 nm and 850 nm.
+#### Step 2 — First-Level GLM (Subject-Level Activation)
+A first-level general linear model (GLM) using AR-IRLS (Autoregressive-Iteratively Reweighted Least Squares) was fitted for each participant to generate localized HbO beta estimates for each participant × channel × condition.
 
-#### Preprocessing Pipeline
+#### Step 3 — Beta Value Extraction & Group LME Analysis
+HbO beta values under the Morphological Awareness (`MA`) task condition were extracted. A Group-level Linear Mixed-Effects (LME) model was applied to screen for channels with significant group differences (`Group:cond`).
+- **MATLAB Phase Result**: **Channel 6, 16, and 21** were successfully selected as our primary regions of interest. Anatomically, these channels correspond to the **dorsal Inferior Frontal Gyrus (dIFG)** and **Middle Temporal Gyrus (MTG)**, both firmly established in reading literature as critical brain regions for reading comprehension and development.
 
-Raw fNIRS signals were preprocessed using the following pipeline:
+---
 
-- Baseline trimming (first and last 5 seconds cropped)
-- Stimulus relabeling (`MA`, `PA`, `Control`)
-- Short-separation channel labeling
-- Optical Density conversion
-- Beer–Lambert Law conversion to HbO/HbR concentration changes
+### [Phase 2: Current Python Brain–Behavior Pipeline]
+*Building on the 3 target channels identified in the MATLAB phase, Python was utilized here to conduct an advanced behavioral mapping, automated missing-data cleaning, and matrix visualization:*
 
-Please note that the subsequent analyses were not performed on the raw fNIRS time-series signals directly. Instead, the preprocessed signals were entered into a first-level GLM, and the resulting HbO beta estimates were used for all downstream statistical analyses.
+#### Step 4 — Targeted Brain–Behavior Correlation (Python)
+Using the pooled dataset of **all 60 participants** to maximize statistical power, Python was implemented to run Pearson correlation coefficients matching the 3 functional channels against **all 9 linguistic and literacy behavioral measures** simultaneously.
 
-### Step 2 — First-Level GLM (Subject-Level)
+#### Step 5 — Heatmap Matrix Visualization (Python)
+Instead of plotting multiple independent, cluttered scatterplots, Python's `seaborn` and `matplotlib` were utilized to condense the 27 statistical pairs (`3 channels × 9 behaviors`) into a unified, publication-ready **Correlation Heatmap Matrix** (`target_3ch_9behav_heatmap.png`) to deliver maximum visual clarity for the project pitch.
 
-A first-level GLM was fitted separately for each participant to get Subject-level activation estimates.
+##### Python Statistical Findings:
+- **Raw Significance**: Before multi-comparison correction, **Channel 16 paired with `C_PIC (52)`** displayed a nominal positive correlation ($r = 0.402$, uncorrected $p = 0.0275$).
+- **FDR Correction**: After globally applying the Benjamini-Hochberg FDR correction across the 27 tests in Python, **no correlation survived** ($p_{FDR} = 0.7412$). This demonstrates that the localized linear coupling does not withstand strict multi-comparison control. The full 27-row summary dataset was successfully exported directly to `All_Subjects_60_Correlation_Results.xlsx` for transparency.
 
-#### Method
+---
 
-- AR-IRLS (robust GLM approach commonly used in fNIRS)
-- Canonical HRF (peak = 6 seconds)
-- Short-separation regressors included
+## Methodological Discussion
 
-#### Output
+The analytical strategy of this project centers on a deliberate, theory-motivated choice:
 
-`SubjStats`
+- **Discarding Unguided Whole-Brain Exploration**: This project discarded the initial whole brain analysis because previous studies have found a significant relationship between dIFG and MTG with reading development.
+- **Literature-Driven Focus**: Instead, we prioritized strong prior empirical literature showing robust associations between neural activation within the dIFG and MTG during morphological processing and later reading outcomes. 
+- **Scientific Interpretation**: Focusing on these 3 functional channels allowed a hypothesis-driven test of the relationship between core reading networks and our expanded behavioral battery. The absence of surviving stars in our final 3×9 heatmap may suggest that task-evoked fNIRS hemodynamics in developing children do not map onto complex behavioral phenotypes via simplistic 1-to-1 linear frameworks, pointing toward the need for more complex, non-linear modeling in future directions.
 
-One HbO beta estimate was generated for each **participant × channel × condition.**
-
-### Step 3 — Beta Value Extraction
-
-HbO beta values were extracted from `SubjStats` and exported as:
-
-- `Beta_TD.csv`
-- `Beta_DD.csv`
-
-Each row corresponds to one **participant × one channel × one condition**
-
-### Step 4 — Group-Level LME Analysis (Initial Channel Selection)
-
-A linear mixed-effects model (LME) was applied to identify channels showing group differences.
-
-#### Model
-
-```r
-beta ~ -1 + Group:cond + (1|Subject)
-```
-
-#### Purpose
-
-- Compare neural activation between TD and DD groups
-- Control for repeated measurements and individual variability
-
-#### Initial Findings
-
-| Channel | Result |
-|--------|--------|
-| CH6 | Significant after FDR correction |
-| CH16 | Significant at uncorrected p < .05 |
-| CH21 | Significant at uncorrected p < .05 |
-
-Initially, these channels were selected for downstream brain–behavior correlation analysis.
-
-### Step 5 — Brain–Behavior Correlation Analysis (Python)
-
-Python was used to perform exploratory brain–behavior analyses.
-
-#### Skills Applied From BrainHackSchool
-
-- Interactive visualization with Python (Plotly)
-- Pearson correlation analysis with Python
-- Whole-brain exploratory visualization
-- Statistical pipeline evaluation
-
-#### Initial Correlation Analysis
-
-Pearson correlations were computed between:
-
-- HbO beta estimates from the MA condition
-- Behavioral scores (`C_MC`, `Character_recog (PR)`)
-
-For selected channels **CH6. CH16, CH21**, no significant correlations were observed.
-
-### Step 6 — Exploratory Whole-Brain Analysis
-
-Following feedback from TA, lab members and the BrainHack pitch discussion, the analysis strategy was revised to reduce potential selection bias ("double dipping").
-
-#### Motivation
-
-Selecting channels based on prior group differences may bias downstream correlation analyses and overlook meaningful associations in other channels.
-
-#### Updated Analysis: Whole Brain Analysis
-
-- All 32 channels were analyzed
-- Pearson correlations computed for every channel
-- An 8×4 scatterplot matrix was generated in Python
-- FDR correction applied across all 32 correlation tests
-
-#### Result
-
-- No channel survived FDR correction
-- Most scatterplots showed weak, cloud-like distributions
-- No robust linear brain–behavior relationship was observed
-
-#### Updated Analysis: Adding Behavioral Measurement
-- Only Channel 16 C_PIC is minimally significant...
-
-## Key Methodological Insight
-
-This project highlighted an important distinction between Group-level effects (LME) and Brain–behavior associations (Pearson correlation).
-
-A channel showing significant TD vs. DD differences does not necessarily entail a significant relationship with independent behavioral measures, and vice versa.
-
-## Future Directions
-
-- Expanding the sample size to improve statistical power
-- Examining theoretically motivated brain–behavior relationships
-- Integrating behavioral predictors within a unified modeling framework
+---
 
 ## How to Run Locally
 
 ### Requirements
-
 - Python 3.x
 - Jupyter Notebook
-- pandas
-- numpy
-- scipy
-- matplotlib
-- plotly
-- statsmodels
+- pandas, numpy, scipy, matplotlib, seaborn, statsmodels
 
 ### Steps
-
-1. Clone this repository
-
-2. Place the following files in the project directory:
-
-- `DD_for_project.xlsx`
-- `TD_for_project.xlsx`
-- `Beta_TD.csv`
-- `Beta_DD.csv`
-
-3. Run:
-
-```bash
-jupyter notebook
-```
-
-4. Open:
-
-```text
-BrainHack_Final_Project.ipynb
-```
+1. Clone this repository.
+2. Place `DD_for_project.xlsx`, `TD_for_project.xlsx`, `Beta_TD.csv`, and `Beta_DD.csv` in the directory.
+3. Launch Jupyter Notebook and run `BrainHack_Final_Project.ipynb`.
 
 ## Acknowledgements
 
