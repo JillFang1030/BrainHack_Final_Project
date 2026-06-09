@@ -104,3 +104,4 @@ Special thanks to the BrainHack instructors and TAs for feedback and methodologi
 - double dipping
 - whole-brain analysis
 - statistical interpretation
+- I further acknowledge the use of AI tools for assistance with coding, language refinement, and technical clarification during the process. The experimental designs, analyses, interpretations, and conclusions presented in this thesis remain original.
