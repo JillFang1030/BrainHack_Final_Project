@@ -136,3 +136,45 @@ def plot_single_target_heatmap(matrix_r, matrix_annot):
     plt.xticks(rotation=30, ha='right')
     plt.yticks(rotation=0)
     plt.tight_layout()
+def plot_32_channels_regplot(channels, behavior_col, stats_results):
+    """
+    繪製全體兒童全腦 32 通道單指標 regplot 散佈圖網格 (含灰色散佈點與紅色趨勢線)。
+    完全對齊原本的 8✕4 排版、畫布尺寸與字型設定。
+    """
+    import numpy as np
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    
+    # 建立 8 × 4 的 matplotlib subplots (原本的設定 100% 搬過來)
+    fig, axes = plt.subplots(8, 4, figsize=(16, 24), sharex=False, sharey=False)
+    axes = axes.flatten()
+    
+    for i, ch in enumerate(channels):
+        ax = axes[i]
+        
+        if stats_results and ch in stats_results:
+            res = stats_results[ch]
+            # 這裡調用 utils 幫我們整理好的全體數據與全體 (all_r, all_p)
+            plot_data = res['all_data']
+            r = res['all_r']
+            p = res['all_p']
+            
+            x = plot_data[ch].values
+            y = plot_data[behavior_col].values
+            
+            # 畫散佈圖與紅色趨勢線 (完全對齊原本的顏色與透明度)
+            sns.regplot(x=x, y=y, ax=ax,
+                        scatter_kws={'alpha':0.6, 'color':'gray'},
+                        line_kws={'color':'red'})
+            
+            # 設定每格小標題
+            ax.set_title(f'Channel {ch}\nr = {r:.2f}, p = {p:.3f}', fontsize=10, fontweight='bold')
+        else:
+            ax.text(0.5, 0.5, "No Data", ha='center', va='center', color='gray')
+            
+        ax.set_xlabel('Beta Value', fontsize=8)
+        ax.set_ylabel('Character PR', fontsize=8)
+        
+    plt.tight_layout()
+    plt.suptitle(f'Brain-Behavior Correlation across All 32 Channels\n(vs. {behavior_col})',
+                 y=1.01, fontsize=16, fontweight='bold')
