@@ -109,3 +109,30 @@ def plot_subgroup_heatmaps(df, channels, behaviors, dd_ids, td_ids, channels_lab
     plt.suptitle('Subgroup Comparison: Brain-Behavior Mapping for DD vs. TD Groups', y=1.02, fontsize=16, fontweight='bold')
     plt.tight_layout()
     plt.show()
+def plot_single_target_heatmap(matrix_r, matrix_annot):
+    """
+    繪製 3✕9 全體兒童單張目標熱圖 (Heatmap)。
+    完全對齊原本的 RdBu_r 顏色、刻度、標題字型與排版。
+    """
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    
+    plt.figure(figsize=(12, 5))
+    matrix_r = matrix_r.astype(float)
+
+    sns.heatmap(matrix_r,
+                annot=matrix_annot.values,
+                fmt="",
+                cmap='RdBu_r',
+                vmin=-0.6, vmax=0.6,
+                center=0.0,
+                linewidths=1.0,
+                cbar_kws={'label': "Pearson's r"})
+
+    plt.title('Targeted Mapping: Correlation Matrix across Hypothesized Channels & 9 Behaviors\n(* indicates raw p < 0.05)',
+              fontsize=14, fontweight='bold', pad=15)
+    plt.xlabel('Behavioral Measures', fontsize=11, fontweight='bold', labelpad=10)
+    plt.ylabel('Target fNIRS Channels', fontsize=11, fontweight='bold', labelpad=10)
+    plt.xticks(rotation=30, ha='right')
+    plt.yticks(rotation=0)
+    plt.tight_layout()
