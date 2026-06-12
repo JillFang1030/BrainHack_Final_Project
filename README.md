@@ -73,15 +73,34 @@ Instead of plotting multiple independent, cluttered scatterplots, Python's `seab
 - **Raw Significance**: Before multi-comparison correction, **Channel 16 paired with `C_PIC (52)`** displayed a nominal positive correlation ($r = 0.402$, uncorrected $p = 0.0275$).
 - **FDR Correction**: After globally applying the Benjamini-Hochberg FDR correction across the 27 tests in Python, **no correlation survived** ($p_{FDR} = 0.7412$). This demonstrates that the localized linear coupling does not withstand strict multi-comparison control. The full 27-row summary dataset was successfully exported directly to `All_Subjects_60_Correlation_Results.xlsx` for transparency.
 
+#### Step 6 — Subgroup Cohort Disaggregation & Dual-Heatmap Mapping (Python)
+To bypass the masking effect of the pooled sample, the dataset was disaggregated back into the two groups  (DD: Dyslexia vs. TD: Typically Developing) and mapped a side-by-side comparative matrix (`subgroup_dd_td_3ch_heatmap.png`). This clinical disaggregation successfully isolated neurofunctional divergences that were originally flattened in the pooled global analysis.
+##### Subgroup Targeted Findings (Focusing on Channel 16):
+- DD Group (Compensatory Recruitment): In the Dyslexia cohort, **Channel 16** exhibited a significant positive correlation with **C_PIC (52)** ($r = 0.40$). This may suggest a neurofunctional mechanism of Compensatory Recruitment, where individuals with dyslexia require higher cortical activation within this specific channel to meet the cognitive demands.
+- TD Group (Neural Efficiency Principle): In the TD group, most channels show negative correlation. Specifically, **Channel 16** demonstrated a strong negative correlation with **C_RAN** ($r = -0.54^$). This aligns with the Neural Efficiency Principle, demonstrating that higher behavioral scores in rapid naming are supported by more optimized, highly efficient, and less metabolically taxing neural activation profiles.
+- Methodological Conclusion: The polarization within 3 channels, especially Channel 16, between cohorts highlights that unified global testing may be methodologically insufficient for neurodevelopmental disorders.
+
 ---
 
 ## Methodological Discussion
 
 The analytical strategy of this project centers on a deliberate, theory-motivated choice:
 
-- **Discarding Unguided Whole-Brain Exploration**: This project discarded the initial whole brain analysis because previous studies have found a significant relationship between dIFG and MTG with reading development.
-- **Literature-Driven Focus**: Instead, we prioritized strong prior empirical literature showing robust associations between neural activation within the dIFG and MTG during morphological processing and later reading outcomes. 
+- **Discarding Unguided Whole-Brain Exploration**: This project discarded the initial whole-brain analysis (but the code is still in the script if anyone is curious to check it out). The reason is that previous studies have found a significant relationship between dIFG and MTG with reading development.
+- **Literature-Driven Focus**: Thus, we prioritized strong prior empirical literature showing robust associations between neural activation within the dIFG and MTG during morphological processing and later reading outcomes. 
 - **Scientific Interpretation**: Focusing on these 3 functional channels allowed a hypothesis-driven test of the relationship between core reading networks and our expanded behavioral battery. The absence of surviving stars in our final 3×9 heatmap may suggest that task-evoked fNIRS hemodynamics in developing children do not map onto complex behavioral phenotypes via simplistic 1-to-1 linear frameworks, pointing toward the need for more complex, non-linear modeling in future directions.
+
+## Conclusion & What I've learned
+
+This project yielded scientific, technical, and methodological insights regarding the neurofunctional mechanisms of dyslexia:
+
+* **Technical Growth**: I learned how to utilize interactive visualization libraries like `Plotly` to examine dataset trends and how to use Python to build programmatic multi-comparison brain–behavior correlation pipelines. I also gained practical experience in automating missing-data curation for messy fNIRS hemodynamics. I also understand the core concepts of selection bias and statistical "double-dipping" in neuroimaging analysis. **Special thanks to the TAs for providing valuable guidance and examples that helped me grasp these advanced methodological concepts!**
+
+* **Scientific Findings & Future Directions**: Brain–behavior relationships in neuroimaging may be complex and often non-linear. The pathology of dyslexia may impact broad, distributed brain networks rather than being strictly localized to a single cortical channel. However, through our subgroup analysis, **Channel 16 continued to stand out significantly in both groups, revealing distinct cognitive mappings:**
+- In the **DD group**, Channel 16 showed its strongest association with **Picture Vocabulary (`C_PIC`)**, indicating a compensatory mechanism during visual-semantic integration. 
+  - In contrast, in the **TD group**, Channel 16 showed its strongest association with **Rapid Automatized Naming (C_RAN)**.
+  This divergence is particularly interesting and neurobiologically critical, because **RAN is well-established in literature as one of the most persistent core deficits of dyslexia**. 
+  For future work, I will expand the sample size ($N > 30$ per group) to further investigate and replicate the specific neurofunctional role of Channel 16 in these literacy-related processes, focusing on how atypical groups bypass traditional RAN networks.
 
 ---
 
@@ -99,9 +118,9 @@ The analytical strategy of this project centers on a deliberate, theory-motivate
 
 ## Acknowledgements
 
-Special thanks to the BrainHack instructors and TAs for feedback and methodological discussions regarding:
+Special thanks to the BrainHack instructors,TAs, and Lab members for feedback and methodological discussions regarding:
 
-- double dipping
-- whole-brain analysis
-- statistical interpretation
+- Double dipping
+- Whole-brain analysis
+- Statistical interpretation
 - I further acknowledge the use of AI tools for assistance with coding, language refinement, and technical clarification during the process. The experimental designs, analyses, interpretations, and conclusions presented in this thesis remain original.
