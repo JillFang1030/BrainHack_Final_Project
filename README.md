@@ -19,7 +19,7 @@ Are individual neural activation patterns within these key functional regions as
 
 | File | Description |
 |--------|--------|
-| `BrainHack_Final_Project.ipynb` | Main Python analysis notebook |
+| `BHS_Final_fNIRS_Project.ipynb` | Main Python analysis notebook |
 | `Beta_TD.csv` | First-level GLM beta values for TD participants |
 | `Beta_DD.csv` | First-level GLM beta values for DD participants |
 | `TD_for_project.xlsx` | Behavioral data for TD participants |
