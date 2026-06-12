@@ -77,9 +77,7 @@ Instead of plotting multiple independent, cluttered scatterplots, Python's `seab
 To bypass the masking effect of the pooled sample, the dataset was disaggregated back into the two groups  (DD: Dyslexia vs. TD: Typically Developing) and mapped a side-by-side comparative matrix (`subgroup_dd_td_3ch_heatmap.png`). This clinical disaggregation successfully isolated neurofunctional divergences that were originally flattened in the pooled global analysis.
 ##### Subgroup Targeted Findings (Focusing on Channel 16):
 - DD Group (Compensatory Recruitment): In the Dyslexia cohort, **Channel 16** exhibited a significant positive correlation with **C_PIC (52)** ($r = 0.40$). This may suggest a neurofunctional mechanism of Compensatory Recruitment, where individuals with dyslexia require higher cortical activation within this specific channel to meet the cognitive demands.
-
-- TD Group (Neural Efficiency Principle): In the TD group, most channels show negative correlation. Specifically, **Channel 16** demonstrated a strong negative correlation with **C_RAN** ($r = -0.54^$). This aligns with the Neural Efficiency Principle, demonstrating that higher behavioral scores in rapid naming are supported by more optimized, highly efficient, and less metabolically taxing neural activation profiles.
-
+- TD Group (Neural Efficiency Principle): In the TD group, most channels show negative correlation. Specifically, **Channel 16** demonstrated a strong negative correlation with **C_RAN** ($r = -0.54$). This aligns with the Neural Efficiency Principle, demonstrating that higher behavioral scores in rapid naming are supported by more optimized, highly efficient, and less metabolically taxing neural activation profiles.
 - Methodological Conclusion: The polarization within 3 channels, especially Channel 16, between cohorts highlights that unified global testing may be methodologically insufficient for neurodevelopmental disorders.
 
 ---
