@@ -4,7 +4,7 @@ from scipy.stats import pearsonr
 
 def calculate_group_correlations(df, channels, behavior_col, dd_ids, td_ids):
     """
-    【核心修正版】不再死鎖第一個元素，動態精確抓取主程式迴圈丟進來的行為指標！
+    【修正版】不再鎖第一個元素，動態精確抓取主程式迴圈丟進來的行為指標！
     """
     results = {}
     
